@@ -34,7 +34,7 @@ function App() {
           <p className="text-gray-400 mt-1">Visualize and configure your microservice deployment flow.</p>
         </div>
         <div className="flex items-center gap-4">
-           <a href="https://github.com/your-repo" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+           <a href="https://github.com/bkrajendra/infravu" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
               <GithubIcon />
             </a>
           <button
