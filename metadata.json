@@ -1,5 +1,0 @@
-{
-  "name": "Interactive K8s Architecture Visualizer",
-  "description": "An interactive presentation and flow diagram for visualizing a microservices architecture deployed in a Kubernetes cluster. Users can expand/collapse service groups and configure the entire diagram via a JSON editor.",
-  "requestFramePermissions": []
-}

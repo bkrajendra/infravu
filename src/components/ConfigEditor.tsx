@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import type { ArchitectureConfig } from '../types';
+import type { ArchitectureConfig } from '../constants';
 
 interface ConfigEditorProps {
   initialConfig: ArchitectureConfig;

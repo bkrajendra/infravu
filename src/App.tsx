@@ -1,13 +1,12 @@
-
-import React, { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react'
+import './App.css'
+import { INITIAL_CONFIG, type ArchitectureConfig } from './constants';
+import { GithubIcon } from './components/icons';
 import { ArchitectureDiagram } from './components/ArchitectureDiagram';
 import { ConfigEditor } from './components/ConfigEditor';
-import { INITIAL_CONFIG } from './constants';
-import type { ArchitectureConfig } from './types';
-import { GithubIcon } from './components/icons';
 
 function App() {
-  const [config, setConfig] = useState<ArchitectureConfig>(INITIAL_CONFIG);
+    const [config, setConfig] = useState<ArchitectureConfig>(INITIAL_CONFIG);
   const [error, setError] = useState<string>('');
   const [isEditorVisible, setEditorVisible] = useState(false);
 
@@ -64,4 +63,4 @@ function App() {
   );
 }
 
-export default App;
+export default App

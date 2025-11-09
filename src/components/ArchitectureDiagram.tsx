@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import type { ArchitectureConfig, DataCenter as IDataCenter, Microservice as IMicroservice, Namespace as INamespace, ServiceGroup as IServiceGroup } from '../types';
+import type { ArchitectureConfig, DataCenter as IDataCenter, Microservice as IMicroservice, Namespace as INamespace, ServiceGroup as IServiceGroup } from '../constants';
 import { ChevronDownIcon, ChevronRightIcon, DeploymentIcon, ServiceIcon } from './icons';
 
 interface ArchitectureDiagramProps {
