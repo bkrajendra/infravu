@@ -1,3 +1,4 @@
-name = "infravu-main"
+name = "infravu"
 pages_build_output_dir = "./dist" # Replace ./dist with your build output directory
 compatibility_date = "2025-11-09" # Use today's date or a recent one
+
