@@ -4,13 +4,13 @@ import { normalizeHostInput } from '../lib/api'
 
 const EMPTY = { id: '', name: '', host: '', port: 9100, protocol: 'http', resourcePath: '/api/resources', color: 'blue' }
 
-export default function HostModal({ open, onClose, onSave }) {
+export default function HostModal({ open, onClose, onSave, initialHost = null }) {
   const [form, setForm] = useState(EMPTY)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (open) { setForm(EMPTY); setError('') }
-  }, [open])
+    if (open) { setForm(initialHost ? { ...EMPTY, ...initialHost } : EMPTY); setError('') }
+  }, [open, initialHost])
 
   if (!open) return null
 
@@ -25,7 +25,7 @@ export default function HostModal({ open, onClose, onSave }) {
       const host = parsed.hostname
       const finalPort = Number(form.port || parsed.port || 9100)
       if (!Number.isFinite(finalPort) || finalPort < 1 || finalPort > 65535) throw new Error()
-      onSave({ ...form, id: crypto.randomUUID(), host, port: finalPort, protocol: parsed.protocol.replace(':',''), name: form.name.trim() || host })
+      onSave({ ...form, id: form.id || crypto.randomUUID(), host, port: finalPort, protocol: parsed.protocol.replace(':',''), name: form.name.trim() || host })
       onClose()
     } catch {
       setError('The host value is not valid.')
@@ -39,7 +39,7 @@ export default function HostModal({ open, onClose, onSave }) {
           <div>
             <div className="flex items-center gap-3">
               <div className="grid h-10 w-10 place-items-center rounded-xl bg-blue-50 text-blue-600"><Server size={19}/></div>
-              <div><div className="text-lg font-bold text-slate-900">Add server</div><div className="text-sm text-slate-500">Connect to a resource-monitor agent.</div></div>
+              <div><div className="text-lg font-bold text-slate-900">{initialHost ? 'Edit server' : 'Add server'}</div><div className="text-sm text-slate-500">Connect to a resource-monitor agent.</div></div>
             </div>
           </div>
           <button onClick={onClose} className="grid h-9 w-9 place-items-center rounded-xl text-slate-400 hover:bg-slate-50 hover:text-slate-700"><X size={18}/></button>
@@ -73,7 +73,7 @@ export default function HostModal({ open, onClose, onSave }) {
 
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-2 text-xs text-slate-400"><Wifi size={14}/> Browser fetch requires agent CORS.</div>
-            <div className="flex gap-2"><button type="button" onClick={onClose} className="h-10 rounded-xl px-4 text-sm font-semibold text-slate-600 hover:bg-slate-50">Cancel</button><button type="submit" className="h-10 rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm hover:bg-blue-700">Add server</button></div>
+            <div className="flex gap-2"><button type="button" onClick={onClose} className="h-10 rounded-xl px-4 text-sm font-semibold text-slate-600 hover:bg-slate-50">Cancel</button><button type="submit" className="h-10 rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm hover:bg-blue-700">{initialHost ? 'Save changes' : 'Add server'}</button></div>
           </div>
         </form>
       </div>

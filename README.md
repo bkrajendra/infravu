@@ -18,6 +18,7 @@ Phase 1 establishes the monorepo and the local inventory UI. Phase 2 will connec
 ├── services/
 │   └── agent/            # Rust resource monitoring agent
 ├── docs/                 # Product and design notes
+├── scripts/              # Agent installation scripts
 ├── Cargo.toml            # Cargo workspace definition
 ├── package.json          # Root JavaScript scripts
 ├── pnpm-workspace.yaml   # pnpm workspace definition
@@ -29,6 +30,7 @@ Phase 1 establishes the monorepo and the local inventory UI. Phase 2 will connec
 - Node.js 22 or newer
 - pnpm 11.25.0 or newer
 - Rust stable and Cargo
+- `curl` and Bash for the Unix installer
 
 ## Getting started
 
@@ -45,6 +47,32 @@ pnpm dev
 ```
 
 The app is normally available at `http://localhost:5173`.
+
+## Install the agent
+
+Install the latest agent release directly from GitHub on Linux or macOS:
+
+```bash
+curl --fail --location https://raw.githubusercontent.com/bkrajendra/infravu/main/scripts/install.sh | bash
+```
+
+The installer detects the operating system and CPU architecture, downloads the matching binary from the latest GitHub release, and installs it to `/usr/local/bin/infravu-agent`. On Linux systems with systemd it also creates, enables, and starts the `infravu-agent` service on port `9100`. The Linux service runs with the default service privileges so it can read host resources and access the system libvirt connection.
+
+macOS receives the binary installation only; start it manually with:
+
+```bash
+/usr/local/bin/infravu-agent
+```
+
+On Windows, open PowerShell and run:
+
+```powershell
+irm https://raw.githubusercontent.com/bkrajendra/infravu/main/scripts/install.ps1 | iex
+```
+
+The Windows installer places `infravu-agent.exe` under `%LOCALAPPDATA%\InfraVu\bin` and does not register a Windows service.
+
+To install a specific release, set `INFRAVU_VERSION` before running the Unix installer or `$env:INFRAVU_VERSION` in PowerShell. The repository can be overridden with `INFRAVU_REPO` when using a fork.
 
 ## Common commands
 

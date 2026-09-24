@@ -10,7 +10,7 @@ A single-page React dashboard for the Rust host resource agent. The UI is based 
 - Auto-refresh every 5 seconds.
 - CPU, memory, disk, network, process and temperature views.
 - Chart.js time-series charts for CPU, memory and network throughput.
-- VM section ready for the `virtualization` block from the extended Rust agent.
+- Virtual machine inventory from the agent's `virtualization` response block.
 - Detects KVM/libvirt signals from `qemu-system-*` processes and `vnet*` interfaces when VM details are not yet exposed.
 - Demo mode with a cleaned fixture derived from the attached `arundhati` host response.
 
@@ -93,4 +93,4 @@ The UI consumes these top-level fields when available:
  virtualization    # from the VM-enabled agent version
 ```
 
-The VM table expects the `virtualization.vms[]` shape from the extended Rust collector discussed previously.
+On Linux, the agent discovers libvirt domains through `virsh list --all`. The agent service user must have access to the libvirt connection, commonly through the `libvirt` group. The VM table consumes the `virtualization.vms[]` response shape.

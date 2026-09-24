@@ -16,6 +16,9 @@ use std::{
     time::{SystemTime, UNIX_EPOCH},
 };
 
+#[cfg(target_os = "linux")]
+use std::process::Command;
+
 use sysinfo::{
     Components,
     Disks,
@@ -80,6 +83,9 @@ struct ResourceSnapshot {
 
     /// Linux cgroup information, when available.
     cgroup_limits: Option<CgroupLimitsInfo>,
+
+    /// Virtual machines managed by the local libvirt daemon, when available.
+    virtualization: Option<VirtualizationInfo>,
 }
 
 //
@@ -324,6 +330,55 @@ struct CgroupLimitsInfo {
 
 //
 // ============================================================================
+// Virtualization
+// ============================================================================
+//
+
+#[derive(Debug, Clone, Serialize)]
+struct VirtualizationInfo {
+    hypervisor: String,
+
+    vm_count: usize,
+
+    vms: Vec<VirtualMachineInfo>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct VirtualMachineInfo {
+    name: String,
+
+    uuid: Option<String>,
+
+    state: String,
+
+    allocation: VirtualMachineAllocation,
+
+    usage: VirtualMachineUsage,
+
+    disks: Vec<VirtualDiskInfo>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct VirtualMachineAllocation {
+    vcpus: Option<u64>,
+
+    memory_max_bytes: Option<u64>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct VirtualMachineUsage {
+    cpu_usage_percent: Option<f64>,
+
+    memory_usage_percent: Option<f64>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct VirtualDiskInfo {
+    capacity_bytes: u64,
+}
+
+//
+// ============================================================================
 // Utility Functions
 // ============================================================================
 //
@@ -349,6 +404,111 @@ fn percent(used: u64, total: u64) -> f64 {
     } else {
         (used as f64 / total as f64) * 100.0
     }
+}
+
+#[cfg(target_os = "linux")]
+fn virsh(args: &[&str]) -> Option<String> {
+    let output = Command::new("virsh")
+        .args(args)
+        .env("LC_ALL", "C")
+        .output()
+        .ok()?;
+
+    if !output.status.success() {
+        return None;
+    }
+
+    String::from_utf8(output.stdout).ok()
+}
+
+#[cfg(target_os = "linux")]
+fn labeled_value<'a>(text: &'a str, label: &str) -> Option<&'a str> {
+    text.lines()
+        .find_map(|line| line.trim().strip_prefix(label).map(str::trim))
+}
+
+#[cfg(target_os = "linux")]
+fn parse_quantity(value: &str) -> Option<u64> {
+    let mut parts = value.split_whitespace();
+    let number = parts.next()?.parse::<f64>().ok()?;
+    let multiplier = match parts.next().unwrap_or("bytes").to_ascii_lowercase().as_str() {
+        "kib" | "kb" => 1024.0,
+        "mib" | "mb" => 1024.0 * 1024.0,
+        "gib" | "gb" => 1024.0 * 1024.0 * 1024.0,
+        "tib" | "tb" => 1024.0 * 1024.0 * 1024.0 * 1024.0,
+        _ => 1.0,
+    };
+
+    Some((number * multiplier) as u64)
+}
+
+#[cfg(target_os = "linux")]
+fn collect_virtual_machine(name: &str) -> VirtualMachineInfo {
+    let uuid = virsh(&["domuuid", name]).and_then(|value| {
+        let value = value.trim().to_owned();
+        (!value.is_empty()).then_some(value)
+    });
+
+    let info = virsh(&["dominfo", name]).unwrap_or_default();
+    let state = labeled_value(&info, "State:")
+        .unwrap_or("unknown")
+        .to_ascii_lowercase();
+    let vcpus = labeled_value(&info, "CPU(s):").and_then(|value| value.parse().ok());
+    let memory_max_bytes = labeled_value(&info, "Max memory:").and_then(parse_quantity);
+
+    let memory_usage_percent = virsh(&["dommemstat", name]).and_then(|value| {
+        let actual = labeled_value(&value, "actual")?.parse::<u64>().ok()?;
+        let unused = labeled_value(&value, "unused")?.parse::<u64>().ok()?;
+        Some(percent(actual.saturating_sub(unused), actual))
+    });
+
+    let disks = virsh(&["domblkinfo", name])
+        .map(|value| {
+            value
+                .lines()
+                .filter_map(|line| line.trim().strip_prefix("Capacity").and_then(parse_quantity))
+                .filter(|capacity| *capacity > 0)
+                .map(|capacity_bytes| VirtualDiskInfo { capacity_bytes })
+                .collect()
+        })
+        .unwrap_or_default();
+
+    VirtualMachineInfo {
+        name: name.to_owned(),
+        uuid,
+        state,
+        allocation: VirtualMachineAllocation {
+            vcpus,
+            memory_max_bytes,
+        },
+        usage: VirtualMachineUsage {
+            cpu_usage_percent: None,
+            memory_usage_percent,
+        },
+        disks,
+    }
+}
+
+#[cfg(target_os = "linux")]
+fn collect_virtualization() -> Option<VirtualizationInfo> {
+    let names = virsh(&["list", "--all", "--name"])?;
+    let vms = names
+        .lines()
+        .map(str::trim)
+        .filter(|name| !name.is_empty())
+        .map(collect_virtual_machine)
+        .collect::<Vec<_>>();
+
+    Some(VirtualizationInfo {
+        hypervisor: "libvirt".to_owned(),
+        vm_count: vms.len(),
+        vms,
+    })
+}
+
+#[cfg(not(target_os = "linux"))]
+fn collect_virtualization() -> Option<VirtualizationInfo> {
+    None
 }
 
 //
@@ -728,6 +888,9 @@ fn collect_snapshot(
                 }
             });
 
+    let virtualization =
+        collect_virtualization();
+
     //
     // ------------------------------------------------------------------------
     // Final Snapshot
@@ -856,6 +1019,8 @@ fn collect_snapshot(
         temperatures,
 
         cgroup_limits,
+
+        virtualization,
     }
 }
 

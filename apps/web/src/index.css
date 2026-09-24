@@ -10,7 +10,7 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; min-width: 1180px; background: #f6f8fb; }
+body { margin: 0; min-width: 0; background: #f6f8fb; }
 button, input, select { font: inherit; }
 
 .card {
