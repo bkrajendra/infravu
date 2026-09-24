@@ -4,11 +4,16 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "services/agent/**"
+      - ".github/workflows/rust.yml"
   pull_request:
     paths:
       - "Cargo.toml"
       - "Cargo.lock"
-      - "src/**"
+      - "services/agent/**"
       - ".github/workflows/rust.yml"
 
 jobs:
@@ -40,7 +45,7 @@ jobs:
         run: rustup target add ${{ matrix.target }}
 
       - name: Build release binary
-        run: cargo build --locked --release --target ${{ matrix.target }}
+        run: cargo build --locked --release --target ${{ matrix.target }} -p linux-resource-monitor
 
       - name: Upload release binary
         uses: actions/upload-artifact@v4
@@ -68,7 +73,7 @@ jobs:
 
       - name: Read crate version
         id: version
-        run: echo "version=$(sed -n 's/^version = "\([^"]*\)"/\1/p' Cargo.toml | head -n 1)" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(sed -n 's/^version = "\([^"]*\)"/\1/p' services/agent/Cargo.toml | head -n 1)" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub release and upload binaries
         uses: softprops/action-gh-release@v2

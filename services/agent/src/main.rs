@@ -1,5 +1,6 @@
 use axum::{
     extract::State,
+    http::{header, Method},
     routing::get,
     Json,
     Router,
@@ -27,6 +28,8 @@ use tokio::{
     sync::RwLock,
     time::{interval, Duration},
 };
+
+use tower_http::cors::{Any, CorsLayer};
 
 //
 // ============================================================================
@@ -1192,7 +1195,15 @@ async fn main()
             //
             // State
             //
-            .with_state(state);
+            .with_state(state)
+
+            // The dashboard calls the agent directly from a browser.
+            .layer(
+                CorsLayer::new()
+                    .allow_origin(Any)
+                    .allow_methods([Method::GET, Method::OPTIONS])
+                    .allow_headers([header::ACCEPT]),
+            );
 
     //
     // ------------------------------------------------------------------------

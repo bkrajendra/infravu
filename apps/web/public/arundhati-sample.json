@@ -1,0 +1,730 @@
+{
+  "timestamp_unix": 1790248403,
+  "system": {
+    "hostname": "arundhati",
+    "os_name": "openSUSE Leap",
+    "os_version": "15.6",
+    "kernel_version": "6.4.0-150600.23.30-default",
+    "kernel_long_version": "Linux 6.4.0-150600.23.30-default",
+    "uptime_seconds": 9961755,
+    "boot_time_unix": 1780286647,
+    "physical_core_count": 24,
+    "logical_cpu_count": 48
+  },
+  "cpu": {
+    "global_usage_percent": 2.631304,
+    "load_average": {
+      "one_minute": 1.05,
+      "five_minutes": 1.18,
+      "fifteen_minutes": 1.3
+    },
+    "cpus": [
+      {
+        "index": 0,
+        "name": "cpu0",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 0.5025126
+      },
+      {
+        "index": 1,
+        "name": "cpu1",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 9.999999
+      },
+      {
+        "index": 2,
+        "name": "cpu2",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 0.5050505
+      },
+      {
+        "index": 3,
+        "name": "cpu3",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 1.5
+      },
+      {
+        "index": 4,
+        "name": "cpu4",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 3.4482758
+      },
+      {
+        "index": 5,
+        "name": "cpu5",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 2.5252526
+      },
+      {
+        "index": 6,
+        "name": "cpu6",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 2.0
+      },
+      {
+        "index": 7,
+        "name": "cpu7",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 0.0
+      },
+      {
+        "index": 8,
+        "name": "cpu8",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 3.960396
+      },
+      {
+        "index": 9,
+        "name": "cpu9",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 1.9900497
+      },
+      {
+        "index": 10,
+        "name": "cpu10",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 3.0
+      },
+      {
+        "index": 11,
+        "name": "cpu11",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 1.5075377
+      },
+      {
+        "index": 12,
+        "name": "cpu12",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 1.010101
+      },
+      {
+        "index": 13,
+        "name": "cpu13",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 1.5075376
+      },
+      {
+        "index": 14,
+        "name": "cpu14",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 0.5050505
+      },
+      {
+        "index": 15,
+        "name": "cpu15",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 12.182741
+      },
+      {
+        "index": 16,
+        "name": "cpu16",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 4.5454545
+      },
+      {
+        "index": 17,
+        "name": "cpu17",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 4.9999995
+      },
+      {
+        "index": 18,
+        "name": "cpu18",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 1.980198
+      },
+      {
+        "index": 19,
+        "name": "cpu19",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 2.020202
+      },
+      {
+        "index": 20,
+        "name": "cpu20",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 0.5076142
+      },
+      {
+        "index": 21,
+        "name": "cpu21",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 7.5376883
+      },
+      {
+        "index": 22,
+        "name": "cpu22",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 0.0
+      },
+      {
+        "index": 23,
+        "name": "cpu23",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 1.4925373
+      },
+      {
+        "index": 24,
+        "name": "cpu24",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 1.0050251
+      },
+      {
+        "index": 25,
+        "name": "cpu25",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 0.5025126
+      },
+      {
+        "index": 26,
+        "name": "cpu26",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 1.0050251
+      },
+      {
+        "index": 27,
+        "name": "cpu27",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 2.020202
+      },
+      {
+        "index": 28,
+        "name": "cpu28",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 0.0
+      },
+      {
+        "index": 29,
+        "name": "cpu29",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 2.020202
+      },
+      {
+        "index": 30,
+        "name": "cpu30",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 1.0050251
+      },
+      {
+        "index": 31,
+        "name": "cpu31",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 3.0150754
+      },
+      {
+        "index": 32,
+        "name": "cpu32",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 0.5
+      },
+      {
+        "index": 33,
+        "name": "cpu33",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 3.9215689
+      },
+      {
+        "index": 34,
+        "name": "cpu34",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 7.619048
+      },
+      {
+        "index": 35,
+        "name": "cpu35",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 1.0050251
+      },
+      {
+        "index": 36,
+        "name": "cpu36",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 2.955665
+      },
+      {
+        "index": 37,
+        "name": "cpu37",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 4.522613
+      },
+      {
+        "index": 38,
+        "name": "cpu38",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 2.5252526
+      },
+      {
+        "index": 39,
+        "name": "cpu39",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 12.935324
+      },
+      {
+        "index": 40,
+        "name": "cpu40",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 0.0
+      },
+      {
+        "index": 41,
+        "name": "cpu41",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 1.010101
+      },
+      {
+        "index": 42,
+        "name": "cpu42",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 1.5
+      },
+      {
+        "index": 43,
+        "name": "cpu43",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 0.5025126
+      },
+      {
+        "index": 44,
+        "name": "cpu44",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 0.5050505
+      },
+      {
+        "index": 45,
+        "name": "cpu45",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 3.0
+      },
+      {
+        "index": 46,
+        "name": "cpu46",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 5.940594
+      },
+      {
+        "index": 47,
+        "name": "cpu47",
+        "brand": "AMD EPYC 9224 24-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "frequency_mhz": 2499,
+        "usage_percent": 1.5228426
+      }
+    ]
+  },
+  "memory": {
+    "total_bytes": 134610612224,
+    "used_bytes": 133707497472,
+    "available_bytes": 903114752,
+    "free_bytes": 1526607872,
+    "used_percent": 99.32909097055649
+  },
+  "swap": {
+    "total_bytes": 17179865088,
+    "used_bytes": 11031166976,
+    "free_bytes": 6148698112,
+    "used_percent": 64.20985799070787
+  },
+  "disks": [
+    {
+      "name": "/dev/sda2",
+      "mount_point": "/",
+      "filesystem": "ext4",
+      "kind": "SSD",
+      "total_bytes": 20957446144,
+      "available_bytes": 15475015680,
+      "used_bytes": 5482430464,
+      "used_percent": 26.15982131758735,
+      "read_only": false,
+      "removable": false,
+      "read_bytes": 0,
+      "written_bytes": 0
+    },
+    {
+      "name": "/dev/sda1",
+      "mount_point": "/boot/efi",
+      "filesystem": "vfat",
+      "kind": "SSD",
+      "total_bytes": 1071624192,
+      "available_bytes": 1065615360,
+      "used_bytes": 6008832,
+      "used_percent": 0.560721943836072,
+      "read_only": false,
+      "removable": false,
+      "read_bytes": 0,
+      "written_bytes": 0
+    },
+    {
+      "name": "/dev/mapper/vg--hdd-lv--os--home",
+      "mount_point": "/home",
+      "filesystem": "ext4",
+      "kind": "HDD",
+      "total_bytes": 10464022528,
+      "available_bytes": 9908830208,
+      "used_bytes": 555192320,
+      "used_percent": 5.3057255803339185,
+      "read_only": false,
+      "removable": false,
+      "read_bytes": 0,
+      "written_bytes": 0
+    },
+    {
+      "name": "/dev/mapper/vg--hdd-lv--os--data",
+      "mount_point": "/data",
+      "filesystem": "ext4",
+      "kind": "HDD",
+      "total_bytes": 52521566208,
+      "available_bytes": 46846242816,
+      "used_bytes": 5675323392,
+      "used_percent": 10.805700975336764,
+      "read_only": false,
+      "removable": false,
+      "read_bytes": 0,
+      "written_bytes": 0
+    },
+    {
+      "name": "/dev/mapper/vg--hdd-lv--os--var",
+      "mount_point": "/var",
+      "filesystem": "ext4",
+      "kind": "HDD",
+      "total_bytes": 15744311296,
+      "available_bytes": 14469238784,
+      "used_bytes": 1275072512,
+      "used_percent": 8.098623610954293,
+      "read_only": false,
+      "removable": false,
+      "read_bytes": 0,
+      "written_bytes": 4096
+    }
+  ],
+  "networks": [
+    {
+      "interface": "br0",
+      "mac_address": "c4:cb:e1:b5:72:ee",
+      "mtu": 1500,
+      "operational_state": "Up",
+      "ip_addresses": [
+        "192.168.1.11",
+        "fe80::ec8c:84ff:fe1d:166b"
+      ],
+      "received_bytes": 2032111450,
+      "transmitted_bytes": 1036727604,
+      "received_packets": 18566395,
+      "transmitted_packets": 1046743,
+      "received_errors": 0,
+      "transmitted_errors": 0
+    },
+    {
+      "interface": "em1",
+      "mac_address": "c4:cb:e1:b5:72:ee",
+      "mtu": 1500,
+      "operational_state": "Up",
+      "ip_addresses": [],
+      "received_bytes": 746045575057,
+      "transmitted_bytes": 1984306978151,
+      "received_packets": 1430986511,
+      "transmitted_packets": 1843075713,
+      "received_errors": 0,
+      "transmitted_errors": 0
+    },
+    {
+      "interface": "em2",
+      "mac_address": "c4:cb:e1:b5:72:ef",
+      "mtu": 1500,
+      "operational_state": "Down",
+      "ip_addresses": [],
+      "received_bytes": 0,
+      "transmitted_bytes": 0,
+      "received_packets": 0,
+      "transmitted_packets": 0,
+      "received_errors": 0,
+      "transmitted_errors": 0
+    },
+    {
+      "interface": "vnet2",
+      "mac_address": "fe:54:00:ec:0b:01",
+      "mtu": 1500,
+      "operational_state": "Unknown",
+      "ip_addresses": [
+        "fe80::fc54:ff:feec:b01"
+      ],
+      "received_bytes": 1418591202133,
+      "transmitted_bytes": 419772098344,
+      "received_packets": 1011216826,
+      "transmitted_packets": 753975982,
+      "received_errors": 0,
+      "transmitted_errors": 0
+    },
+    {
+      "interface": "vnet6",
+      "mac_address": "fe:54:00:08:6d:4d",
+      "mtu": 1500,
+      "operational_state": "Unknown",
+      "ip_addresses": [
+        "fe80::fc54:ff:fe08:6d4d"
+      ],
+      "received_bytes": 144946323538,
+      "transmitted_bytes": 131968287730,
+      "received_packets": 61817794,
+      "transmitted_packets": 88560162,
+      "received_errors": 0,
+      "transmitted_errors": 0
+    },
+    {
+      "interface": "vnet10",
+      "mac_address": "fe:54:00:8b:ce:e7",
+      "mtu": 1500,
+      "operational_state": "Unknown",
+      "ip_addresses": [
+        "fe80::fc54:ff:fe8b:cee7"
+      ],
+      "received_bytes": 408786666655,
+      "transmitted_bytes": 72686982698,
+      "received_packets": 330284707,
+      "transmitted_packets": 426206559,
+      "received_errors": 0,
+      "transmitted_errors": 0
+    },
+    {
+      "interface": "vnet12",
+      "mac_address": "fe:54:00:fb:0d:58",
+      "mtu": 1500,
+      "operational_state": "Unknown",
+      "ip_addresses": [
+        "fe80::fc54:ff:fefb:d58"
+      ],
+      "received_bytes": 1999019933592,
+      "transmitted_bytes": 1972208402725,
+      "received_packets": 1269373901,
+      "transmitted_packets": 1389199079,
+      "received_errors": 0,
+      "transmitted_errors": 0
+    },
+    {
+      "interface": "vnet13",
+      "mac_address": "fe:54:00:46:28:7f",
+      "mtu": 1500,
+      "operational_state": "Unknown",
+      "ip_addresses": [
+        "fe80::fc54:ff:fe46:287f"
+      ],
+      "received_bytes": 2198289322837,
+      "transmitted_bytes": 2166564236592,
+      "received_packets": 1518644642,
+      "transmitted_packets": 1419112625,
+      "received_errors": 0,
+      "transmitted_errors": 0
+    },
+    {
+      "interface": "vnet15",
+      "mac_address": "fe:54:00:e3:8f:3f",
+      "mtu": 1500,
+      "operational_state": "Unknown",
+      "ip_addresses": [
+        "fe80::fc54:ff:fee3:8f3f"
+      ],
+      "received_bytes": 490921003895,
+      "transmitted_bytes": 1166766436385,
+      "received_packets": 989535036,
+      "transmitted_packets": 1128573721,
+      "received_errors": 0,
+      "transmitted_errors": 0
+    }
+  ],
+  "processes": [
+    {
+      "pid": 44109,
+      "parent_pid": 1,
+      "name": "qemu-system-x86_64",
+      "executable": "/usr/bin/qemu-system-x86_64",
+      "command": "qemu-system-x86_64 -name guest=kubworker1 ...",
+      "cwd": "/",
+      "cpu_percent": 0.5012008,
+      "memory_bytes": 54277398528,
+      "virtual_memory_bytes": 93968760832,
+      "status": "Sleep",
+      "user_id": "107",
+      "start_time_unix": 1786691474,
+      "run_time_seconds": 3556928,
+      "read_bytes": 18616320,
+      "written_bytes": 0
+    },
+    {
+      "pid": 38121,
+      "parent_pid": 2,
+      "name": "kworker/10:2-mm_percpu_wq",
+      "executable": null,
+      "command": "",
+      "cwd": "/",
+      "cpu_percent": 0,
+      "memory_bytes": 0,
+      "virtual_memory_bytes": 0,
+      "status": "Idle",
+      "user_id": "0",
+      "start_time_unix": 1788287422,
+      "run_time_seconds": 1960980,
+      "read_bytes": 0,
+      "written_bytes": 0
+    },
+    {
+      "pid": 151,
+      "parent_pid": 2,
+      "name": "kworker/22:0H-events_highpri",
+      "executable": null,
+      "command": "",
+      "cwd": "/",
+      "cpu_percent": 0,
+      "memory_bytes": 0,
+      "virtual_memory_bytes": 0,
+      "status": "Idle",
+      "user_id": "0",
+      "start_time_unix": 1780286647,
+      "run_time_seconds": 9961755,
+      "read_bytes": 0,
+      "written_bytes": 0
+    },
+    {
+      "pid": 237,
+      "parent_pid": 2,
+      "name": "idle_inject/37",
+      "executable": null,
+      "command": "",
+      "cwd": "/",
+      "cpu_percent": 0,
+      "memory_bytes": 0,
+      "virtual_memory_bytes": 0,
+      "status": "Sleep",
+      "user_id": "0",
+      "start_time_unix": 1780286647,
+      "run_time_seconds": 9961755,
+      "read_bytes": 0,
+      "written_bytes": 0
+    }
+  ],
+  "temperatures": [
+    {
+      "label": "k10temp Tccd1",
+      "temperature_celsius": 39.125,
+      "max_celsius": 50.625,
+      "critical_celsius": null
+    },
+    {
+      "label": "k10temp Tccd4",
+      "temperature_celsius": 39.25,
+      "max_celsius": 52.0,
+      "critical_celsius": null
+    },
+    {
+      "label": "k10temp Tctl",
+      "temperature_celsius": 43.375,
+      "max_celsius": 46.875,
+      "critical_celsius": null
+    },
+    {
+      "label": "k10temp Tccd3",
+      "temperature_celsius": 38.125,
+      "max_celsius": 47.0,
+      "critical_celsius": null
+    },
+    {
+      "label": "k10temp Tccd2",
+      "temperature_celsius": 41.125,
+      "max_celsius": 47.5,
+      "critical_celsius": null
+    }
+  ],
+  "cgroup_limits": null
+}

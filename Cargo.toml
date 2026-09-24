@@ -1,20 +1,6 @@
-[package]
-name = "linux-resource-monitor"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-axum = { version = "0.8.9", features = ["json"] }
-tokio = { version = "1.47.1", features = [
-    "macros",
-    "rt-multi-thread",
-    "net",
-    "time",
-    "signal"
-] }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0.151"
-sysinfo = "0.39.6"
+[workspace]
+members = ["services/agent"]
+resolver = "2"
 
 [profile.release]
 lto = true

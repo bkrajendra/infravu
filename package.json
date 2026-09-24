@@ -1,0 +1,21 @@
+{
+  "name": "infravu",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Infrastructure inventory and resource monitoring for data centers, hosts, and virtual machines.",
+  "scripts": {
+    "dev": "pnpm run dev:web",
+    "dev:web": "pnpm --filter @infravu/web dev",
+    "build": "pnpm run build:web",
+    "build:web": "pnpm --filter @infravu/web build",
+    "preview": "pnpm --filter @infravu/web preview",
+    "agent:check": "cargo check -p linux-resource-monitor",
+    "agent:build": "cargo build -p linux-resource-monitor",
+    "agent:test": "cargo test -p linux-resource-monitor",
+    "check": "pnpm run build:web && pnpm run agent:check"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@11.25.0"
+}
