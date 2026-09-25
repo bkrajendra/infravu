@@ -45,6 +45,20 @@ Open the Vite URL shown in the terminal, select **Add server**, and enter the ho
 
 Run the same installer again. It replaces the binary and restarts an existing Linux systemd service. On macOS, restart the manually running process after installation. On Windows, the installer stops an existing `infravu-agent` process before replacing the executable.
 
+If you need to stop the agent manually before updating:
+
+```bash
+# Linux
+sudo systemctl stop infravu-agent
+
+# macOS or a manually started Linux process
+pkill -x infravu-agent
+```
+
+```powershell
+Stop-Process -Name infravu-agent -Force
+```
+
 ## User guide
 
 The dashboard stores the inventory list locally in the browser. Use the Servers table to search, filter, refresh health, export inventory, or open a server dashboard. The server dashboard provides host resource details and a Virtual Machines view when libvirt data is available.

@@ -62,6 +62,53 @@ install_binary() {
   fi
 }
 
+stop_running_agent() {
+  command -v pgrep >/dev/null 2>&1 || return 0
+  if ! pgrep -x "$BINARY_NAME" >/dev/null 2>&1; then
+    return 0
+  fi
+
+  command -v pkill >/dev/null 2>&1 || fail "pkill is required to stop the running agent before updating it"
+  log "stopping running ${BINARY_NAME} process before replacing the binary"
+  if ! pkill -TERM -x "$BINARY_NAME" 2>/dev/null; then
+    command -v sudo >/dev/null 2>&1 || fail "sudo is required to stop the running agent"
+    sudo pkill -TERM -x "$BINARY_NAME"
+  fi
+
+  for _ in 1 2 3 4 5; do
+    pgrep -x "$BINARY_NAME" >/dev/null 2>&1 || return 0
+    sleep 1
+  done
+
+  if pgrep -x "$BINARY_NAME" >/dev/null 2>&1; then
+    if ! pkill -KILL -x "$BINARY_NAME" 2>/dev/null; then
+      sudo pkill -KILL -x "$BINARY_NAME"
+    fi
+  fi
+}
+
+service_stopped=false
+if [ "$os" = "Linux" ] && command -v systemctl >/dev/null 2>&1; then
+  if [ -w /etc/systemd/system ]; then
+    if systemctl is-active --quiet "$SERVICE_NAME"; then
+      log "stopping systemd service ${SERVICE_NAME} before replacing the binary"
+      systemctl stop "$SERVICE_NAME"
+      service_stopped=true
+    fi
+  else
+    command -v sudo >/dev/null 2>&1 || fail "stopping the existing systemd service requires sudo"
+    if sudo systemctl is-active --quiet "$SERVICE_NAME"; then
+      log "stopping systemd service ${SERVICE_NAME} before replacing the binary"
+      sudo systemctl stop "$SERVICE_NAME"
+      service_stopped=true
+    fi
+  fi
+fi
+
+if [ "$service_stopped" = false ]; then
+  stop_running_agent
+fi
+
 install_binary
 binary_path="${install_dir}/${BINARY_NAME}"
 
