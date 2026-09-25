@@ -7,7 +7,48 @@ The project has two cooperating parts:
 - **Web app**: a React and Tailwind CSS interface that maintains inventory locally in the browser.
 - **Agent**: a Rust service installed on servers and VMs that exposes host and virtual machine resource details through APIs.
 
-Phase 1 establishes the monorepo and the local inventory UI. Phase 2 will connect the UI to the agent APIs.
+![Rust builds](https://github.com/bkrajendra/infravu/actions/workflows/rust.yml/badge.svg)
+![Web deployment](https://github.com/bkrajendra/infravu/actions/workflows/deploy.yml/badge.svg)
+
+## Get started
+
+InfraVu has a web dashboard and a lightweight agent. Install the agent on a host, start the dashboard, and register the host using its agent endpoint.
+
+### 1. Install the agent
+
+On Linux or macOS:
+
+```bash
+curl --fail --location https://raw.githubusercontent.com/bkrajendra/infravu/main/scripts/install.sh | bash
+```
+
+On Windows PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/bkrajendra/infravu/main/scripts/install.ps1 | iex
+```
+
+Linux registers or updates the `infravu-agent` systemd service on port `9100`. macOS and Windows install the binary without registering a service.
+
+### 2. Start the dashboard
+
+From the repository root:
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Open the Vite URL shown in the terminal, select **Add server**, and enter the host address, port `9100`, and resource path `/api/resources`.
+
+### Updating an existing agent
+
+Run the same installer again. It replaces the binary and restarts an existing Linux systemd service. On macOS, restart the manually running process after installation. On Windows, the installer stops an existing `infravu-agent` process before replacing the executable.
+
+## User guide
+
+The dashboard stores the inventory list locally in the browser. Use the Servers table to search, filter, refresh health, export inventory, or open a server dashboard. The server dashboard provides host resource details and a Virtual Machines view when libvirt data is available.
+
 
 ## Repository layout
 
@@ -25,54 +66,16 @@ Phase 1 establishes the monorepo and the local inventory UI. Phase 2 will connec
 └── .github/workflows/    # Build, release, and deployment automation
 ```
 
-## Prerequisites
+## Developer setup
+
+### Prerequisites
 
 - Node.js 22 or newer
 - pnpm 11.25.0 or newer
 - Rust stable and Cargo
 - `curl` and Bash for the Unix installer
 
-## Getting started
-
-Install frontend dependencies from the repository root:
-
-```bash
-pnpm install
-```
-
-Start the frontend development server:
-
-```bash
-pnpm dev
-```
-
-The app is normally available at `http://localhost:5173`.
-
-## Install the agent
-
-Install the latest agent release directly from GitHub on Linux or macOS:
-
-```bash
-curl --fail --location https://raw.githubusercontent.com/bkrajendra/infravu/main/scripts/install.sh | bash
-```
-
-The installer detects the operating system and CPU architecture, downloads the matching binary from the latest GitHub release, and installs it to `/usr/local/bin/infravu-agent`. On Linux systems with systemd it also creates, enables, and starts the `infravu-agent` service on port `9100`. The Linux service runs with the default service privileges so it can read host resources and access the system libvirt connection.
-
-macOS receives the binary installation only; start it manually with:
-
-```bash
-/usr/local/bin/infravu-agent
-```
-
-On Windows, open PowerShell and run:
-
-```powershell
-irm https://raw.githubusercontent.com/bkrajendra/infravu/main/scripts/install.ps1 | iex
-```
-
-The Windows installer places `infravu-agent.exe` under `%LOCALAPPDATA%\InfraVu\bin` and does not register a Windows service.
-
-To install a specific release, set `INFRAVU_VERSION` before running the Unix installer or `$env:INFRAVU_VERSION` in PowerShell. The repository can be overridden with `INFRAVU_REPO` when using a fork.
+Install frontend dependencies from the repository root with `pnpm install`, then use `pnpm dev` to start the web app locally.
 
 ## Common commands
 

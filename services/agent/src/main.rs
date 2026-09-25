@@ -88,6 +88,17 @@ struct ResourceSnapshot {
     virtualization: Option<VirtualizationInfo>,
 }
 
+#[derive(Debug, Clone, Serialize)]
+struct HealthResponse {
+    status: String,
+
+    cpu_usage_percent: f32,
+
+    disk_usage_percent: f64,
+
+    timestamp_unix: u64,
+}
+
 //
 // ============================================================================
 // System Information
@@ -1030,8 +1041,28 @@ fn collect_snapshot(
 // ============================================================================
 //
 
-async fn health() -> &'static str {
-    "OK"
+async fn health(
+    State(state): State<AppState>,
+) -> Json<HealthResponse> {
+    let snapshot = state.snapshot.read().await;
+    let disk_total = snapshot.disks.iter().map(|disk| disk.total_bytes).sum::<u64>();
+    let disk_used = snapshot.disks.iter().map(|disk| disk.used_bytes).sum::<u64>();
+    let cpu_usage_percent = snapshot.cpu.global_usage_percent;
+    let disk_usage_percent = percent(disk_used, disk_total);
+    let status = if cpu_usage_percent >= 95.0 || disk_usage_percent >= 95.0 {
+        "critical"
+    } else if cpu_usage_percent >= 80.0 || disk_usage_percent >= 80.0 {
+        "warning"
+    } else {
+        "healthy"
+    };
+
+    Json(HealthResponse {
+        status: status.to_owned(),
+        cpu_usage_percent,
+        disk_usage_percent,
+        timestamp_unix: snapshot.timestamp_unix,
+    })
 }
 
 //

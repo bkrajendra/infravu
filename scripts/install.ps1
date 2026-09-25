@@ -17,8 +17,10 @@ if ($Version -eq "latest") {
 
 New-Item -ItemType Directory -Force -Path $installDir | Out-Null
 Write-Host "[infravu] downloading $asset from $Repo ($Version)"
+
+Get-Process -Name "infravu-agent" -ErrorAction SilentlyContinue | Stop-Process -Force
 Invoke-WebRequest -Uri $downloadUrl -OutFile $binaryPath
 
 Write-Host "[infravu] installed $binaryPath"
-Write-Host "[infravu] Windows service registration is intentionally skipped"
+Write-Host "[infravu] any existing agent process was stopped; start the updated binary manually"
 Write-Host "[infravu] agent endpoint: http://127.0.0.1:9100/api/resources"

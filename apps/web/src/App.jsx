@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Activity, AlertTriangle, ArrowDownToLine, ArrowUpFromLine, Box, CalendarClock, ChevronDown, Clock3, Cpu, Database, Gauge, HardDrive, Layers3, MemoryStick, Network, Pencil, Plus, RefreshCw, Server, ShieldCheck, SlidersHorizontal, Thermometer, Trash2, Wifi } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Activity, AlertTriangle, ArrowDownToLine, ArrowUpFromLine, Box, CalendarClock, ChevronDown, ChevronLeft, ChevronRight, Clock3, Cpu, Database, Download, Gauge, HardDrive, Layers3, MemoryStick, Network, Pencil, Plus, RefreshCw, Search, Server, ShieldCheck, SlidersHorizontal, Thermometer, Trash2, Wifi } from 'lucide-react'
 import Sidebar from './components/Sidebar'
 import HostModal from './components/HostModal'
 import MetricCard from './components/MetricCard'
 import SectionCard from './components/SectionCard'
 import LineChart from './components/LineChart'
 import { DEFAULT_HOSTS, STORAGE_KEY, SELECTED_HOST_KEY } from './data/defaultHosts'
-import { fetchResources, getResourceUrl } from './lib/api'
+import { fetchHealth, fetchResources, getResourceUrl } from './lib/api'
 import { clampPercent, deriveNetworkRate, formatBytes, formatDate, formatDuration, formatPercent, formatRate } from './lib/format'
 
 const SAMPLE_URL = '/arundhati-sample.json'
@@ -56,7 +56,28 @@ function EmptyVM({ hasSignals }) {
   </div>
 }
 
-function LandingPage({ hosts, section, onNavigate, onAdd, onOpen, onEdit, onDelete }) {
+function LandingPage({ hosts, section, onNavigate, onAdd, onOpen, onEdit, onDelete, healthById = {}, healthLoading = false, onRefreshHealth }) {
+  const [query, setQuery] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [pageSize, setPageSize] = useState(10)
+  const [page, setPage] = useState(1)
+
+  const filteredHosts = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase()
+    return hosts.filter((host) => {
+      const matchesQuery = !normalizedQuery || [host.name, host.host, host.protocol, host.port].some((value) => String(value || '').toLowerCase().includes(normalizedQuery))
+      const healthStatus = healthById[host.id]?.status || 'pending'
+      const matchesStatus = statusFilter === 'all' || healthStatus === statusFilter
+      return matchesQuery && matchesStatus
+    })
+  }, [hosts, query, statusFilter, healthById])
+
+  const pageCount = Math.max(1, Math.ceil(filteredHosts.length / pageSize))
+  const visibleHosts = filteredHosts.slice((page - 1) * pageSize, page * pageSize)
+
+  useEffect(() => setPage(1), [query, statusFilter, pageSize])
+  useEffect(() => { if (page > pageCount) setPage(pageCount) }, [page, pageCount])
+
   if (section === 'settings') {
     return <LandingShell section={section} onNavigate={onNavigate}>
       <div className="max-w-3xl">
@@ -78,6 +99,21 @@ function LandingPage({ hosts, section, onNavigate, onAdd, onOpen, onEdit, onDele
     </LandingShell>
   }
 
+  function exportHosts() {
+    const header = ['Name', 'Host', 'Port', 'Protocol', 'Resource path', 'Status', 'CPU %', 'Disk %']
+    const rows = filteredHosts.map((host) => {
+      const health = healthById[host.id]?.data || {}
+      return [host.name, host.host, host.port, host.protocol || 'http', host.resourcePath || '/api/resources', health.status || 'pending', health.cpu_usage_percent ?? '', health.disk_usage_percent ?? '']
+    })
+    const csv = [header, ...rows].map((row) => row.map((value) => `"${String(value).replaceAll('"', '""')}"`).join(',')).join('\n')
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }))
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'infravu-servers.csv'
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
   return <LandingShell section={section} onNavigate={onNavigate}>
     <div className="flex flex-wrap items-end justify-between gap-5">
       <PageHeading eyebrow="Infrastructure inventory" title="Servers" description="All registered hosts in this workspace." />
@@ -91,10 +127,18 @@ function LandingPage({ hosts, section, onNavigate, onAdd, onOpen, onEdit, onDele
     </div>
 
     <section className="mt-8">
-      <div className="mb-3 flex items-center justify-between"><h2 className="text-sm font-bold uppercase tracking-[.14em] text-slate-400">Registered servers</h2><span className="text-xs text-slate-400">{hosts.length} total</span></div>
-      <div className="space-y-3">
-        {hosts.map((item) => <ServerListItem key={item.id} host={item} onOpen={()=>onOpen(item.id)} onEdit={()=>onEdit(item)} onDelete={()=>onDelete(item.id)}/>) }
-        {!hosts.length && <div className="card border-dashed p-10 text-center"><Server size={25} className="mx-auto text-slate-300"/><div className="mt-3 font-semibold text-slate-700">No servers registered</div><div className="mt-1 text-sm text-slate-400">Add your first agent endpoint to start monitoring.</div><button onClick={onAdd} className="mt-5 h-10 rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700">Add server</button></div>}
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-3"><h2 className="text-sm font-bold uppercase tracking-[.14em] text-slate-400">Registered servers</h2><span className="text-xs text-slate-400">{filteredHosts.length} of {hosts.length} shown</span></div>
+      <div className="card overflow-hidden">
+        <div className="flex flex-wrap items-center gap-3 border-b border-slate-100 p-4">
+          <label className="relative min-w-[220px] flex-1"><Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"/><input value={query} onChange={(event)=>setQuery(event.target.value)} placeholder="Search servers" className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-50"/></label>
+          <label className="flex h-10 items-center gap-2 rounded-xl border border-slate-200 px-3 text-sm text-slate-500"><SlidersHorizontal size={15}/><span className="hidden sm:inline">Status</span><select value={statusFilter} onChange={(event)=>setStatusFilter(event.target.value)} className="bg-transparent font-semibold text-slate-700 outline-none"><option value="all">All</option><option value="healthy">Healthy</option><option value="warning">Warning</option><option value="critical">Critical</option><option value="offline">Offline</option><option value="pending">Pending</option></select></label>
+          <label className="flex h-10 items-center gap-2 rounded-xl border border-slate-200 px-3 text-sm text-slate-500"><span className="hidden sm:inline">Rows</span><select value={pageSize} onChange={(event)=>setPageSize(Number(event.target.value))} className="bg-transparent font-semibold text-slate-700 outline-none"><option value="10">10</option><option value="25">25</option><option value="50">50</option></select></label>
+          <button onClick={onRefreshHealth} disabled={healthLoading} className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-800 disabled:opacity-50" title="Refresh server health"><RefreshCw size={16} className={healthLoading ? 'animate-spin' : ''}/></button>
+          <button onClick={exportHosts} className="flex h-10 items-center gap-2 rounded-xl border border-slate-200 px-3 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900"><Download size={15}/> <span className="hidden sm:inline">Export</span></button>
+        </div>
+        {hosts.length ? <div className="overflow-x-auto"><table className="w-full min-w-[850px] text-left text-sm"><thead className="bg-slate-50 text-[11px] font-bold uppercase tracking-[.1em] text-slate-400"><tr><th className="px-5 py-3">Server</th><th className="px-3 py-3">Endpoint</th><th className="px-3 py-3">Status</th><th className="px-3 py-3">CPU</th><th className="px-3 py-3">Disk</th><th className="px-3 py-3">Last check</th><th className="px-5 py-3 text-right">Actions</th></tr></thead><tbody>{visibleHosts.map((item) => <ServerTableRow key={item.id} host={item} health={healthById[item.id]} onOpen={()=>onOpen(item.id)} onEdit={()=>onEdit(item)} onDelete={()=>onDelete(item.id)}/>)}</tbody></table></div> : <EmptyServerTable onAdd={onAdd}/>}
+        {hosts.length > 0 && !visibleHosts.length && <div className="p-10 text-center text-sm text-slate-400">No servers match the current search and filter.</div>}
+        {filteredHosts.length > 0 && <div className="flex items-center justify-between border-t border-slate-100 px-5 py-3 text-xs text-slate-400"><span>Showing {(page - 1) * pageSize + 1}-{Math.min(page * pageSize, filteredHosts.length)} of {filteredHosts.length}</span><div className="flex items-center gap-2"><button onClick={()=>setPage((value)=>Math.max(1, value - 1))} disabled={page===1} className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-40" title="Previous page"><ChevronLeft size={15}/></button><span className="font-semibold text-slate-600">{page} / {pageCount}</span><button onClick={()=>setPage((value)=>Math.min(pageCount, value + 1))} disabled={page===pageCount} className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-40" title="Next page"><ChevronRight size={15}/></button></div></div>}
       </div>
     </section>
   </LandingShell>
@@ -112,8 +156,22 @@ function InventoryStat({ label, value, icon: Icon }) {
   return <div className="card flex items-center gap-4 p-5"><div className="grid h-10 w-10 place-items-center rounded-xl bg-blue-50 text-blue-600"><Icon size={18}/></div><div><div className="text-2xl font-bold text-slate-900">{value}</div><div className="mt-1 text-xs font-semibold uppercase tracking-[.1em] text-slate-400">{label}</div></div></div>
 }
 
-function ServerListItem({ host, onOpen, onEdit, onDelete }) {
-  return <div className="card group flex items-center gap-4 p-4 transition hover:border-blue-200 hover:shadow-md"><button onClick={onOpen} className="flex min-w-0 flex-1 items-center gap-4 text-left"><div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-slate-900 text-white"><Server size={20}/></div><span className="min-w-0"><span className="block truncate font-bold text-slate-800">{host.name}</span><span className="mt-1 block truncate text-sm text-slate-400">{host.protocol || 'http'}://{host.host}:{host.port}{host.resourcePath || '/api/resources'}</span></span></button><span className="hidden items-center gap-2 text-xs text-slate-400 md:flex"><span className="h-2 w-2 rounded-full bg-slate-300"/>Agent endpoint</span><button onClick={onEdit} title={`Edit ${host.name}`} className="grid h-9 w-9 place-items-center rounded-lg text-slate-400 hover:bg-blue-50 hover:text-blue-600"><Pencil size={15}/></button><button onClick={onDelete} title={`Delete ${host.name}`} className="grid h-9 w-9 place-items-center rounded-lg text-slate-400 hover:bg-rose-50 hover:text-rose-600"><Trash2 size={15}/></button><button onClick={onOpen} className="hidden rounded-lg bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-700 sm:block">Open dashboard</button></div>
+function ServerTableRow({ host, health, onOpen, onEdit, onDelete }) {
+  const state = health?.status || 'pending'
+  const stateStyles = { healthy: ['bg-emerald-50 text-emerald-700', 'bg-emerald-500', 'Healthy'], warning: ['bg-blue-50 text-blue-700', 'bg-blue-500', 'Warning'], critical: ['bg-rose-50 text-rose-700', 'bg-rose-500', 'Critical'], offline: ['bg-rose-50 text-rose-700', 'bg-rose-500', 'Offline'], pending: ['bg-slate-100 text-slate-500', 'bg-blue-500', 'Checking'] }
+  const [badgeClass, dotClass, label] = stateStyles[state] || stateStyles.pending
+  const healthData = health?.data || {}
+  return <tr onClick={onOpen} onKeyDown={(event)=>{if(event.key==='Enter' || event.key===' ') onOpen()}} tabIndex={0} className="group cursor-pointer border-t border-slate-100 transition hover:bg-blue-50/40 focus:bg-blue-50/40 focus:outline-none"><td className="px-5 py-4"><div className="flex items-center gap-3"><div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-slate-900 text-white"><Server size={17}/></div><div className="min-w-0"><div className="truncate font-bold text-slate-800">{host.name}</div><div className="truncate text-xs text-slate-400">{host.host}</div></div></div></td><td className="px-3 py-4 text-xs text-slate-500">{host.protocol || 'http'}://{host.host}:{host.port}</td><td className="px-3 py-4"><div className="flex items-center gap-2"><span className={`h-2 w-2 rounded-full ${dotClass}`}/><span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${badgeClass}`}>{label}</span></div>{health?.loading && <div className="mt-2 h-1 w-28 overflow-hidden rounded-full bg-blue-100"><div className="h-full w-1/2 animate-pulse rounded-full bg-blue-500"/></div>}</td><td className="px-3 py-4"><HealthMetric value={healthData.cpu_usage_percent} tone="emerald"/></td><td className="px-3 py-4"><HealthMetric value={healthData.disk_usage_percent} tone="blue"/></td><td className="px-3 py-4 text-xs text-slate-400">{healthData.timestamp_unix ? new Date(healthData.timestamp_unix * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--'}</td><td className="px-5 py-4"><div className="flex justify-end gap-1"><button onClick={(event)=>{event.stopPropagation();onEdit()}} title={`Edit ${host.name}`} className="grid h-8 w-8 place-items-center rounded-lg text-slate-400 hover:bg-blue-50 hover:text-blue-600"><Pencil size={14}/></button><button onClick={(event)=>{event.stopPropagation();onDelete()}} title={`Delete ${host.name}`} className="grid h-8 w-8 place-items-center rounded-lg text-slate-400 hover:bg-rose-50 hover:text-rose-600"><Trash2 size={14}/></button></div></td></tr>
+}
+
+function HealthMetric({ value, tone }) {
+  const numericValue = Number(value)
+  if (!Number.isFinite(numericValue)) return <span className="text-xs text-slate-300">--</span>
+  return <div className="flex min-w-[95px] items-center gap-2"><div className="flex h-5 items-end gap-0.5"><span className={`w-1 rounded-full ${tone === 'emerald' ? 'bg-emerald-200' : 'bg-blue-200'}`} style={{height: `${Math.max(3, Math.min(20, numericValue * .2))}px`}}/><span className={`w-1 rounded-full ${tone === 'emerald' ? 'bg-emerald-400' : 'bg-blue-400'}`} style={{height: `${Math.max(5, Math.min(20, numericValue * .35))}px`}}/><span className={`w-1 rounded-full ${tone === 'emerald' ? 'bg-emerald-500' : 'bg-blue-500'}`} style={{height: `${Math.max(7, Math.min(20, numericValue * .5))}px`}}/></div><span className="text-xs font-semibold text-slate-600">{numericValue.toFixed(1)}%</span></div>
+}
+
+function EmptyServerTable({ onAdd }) {
+  return <div className="p-10 text-center"><Server size={25} className="mx-auto text-slate-300"/><div className="mt-3 font-semibold text-slate-700">No servers registered</div><div className="mt-1 text-sm text-slate-400">Add your first agent endpoint to start monitoring.</div><button onClick={onAdd} className="mt-5 h-10 rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700">Add server</button></div>
 }
 
 export default function App() {
@@ -131,11 +189,54 @@ export default function App() {
   const [showHostModal, setShowHostModal] = useState(false)
   const [editingHost, setEditingHost] = useState(null)
   const [sampleMode, setSampleMode] = useState(false)
+  const [healthById, setHealthById] = useState({})
+  const [healthLoading, setHealthLoading] = useState(false)
+  const [healthRefreshKey, setHealthRefreshKey] = useState(0)
+  const healthLoadedRef = useRef(false)
 
   const host = useMemo(() => hosts.find((h)=>h.id===selectedId) || hosts[0], [hosts, selectedId])
 
   useEffect(()=>{ localStorage.setItem(STORAGE_KEY, JSON.stringify(hosts)) },[hosts])
   useEffect(()=>{ if(selectedId) localStorage.setItem(SELECTED_HOST_KEY, selectedId) },[selectedId])
+
+  const refreshHealth = useCallback(() => {
+    healthLoadedRef.current = false
+    setHealthRefreshKey((value) => value + 1)
+  }, [])
+
+  useEffect(() => {
+    if (view !== 'landing' || landingSection !== 'dashboard' || healthLoadedRef.current) return undefined
+    healthLoadedRef.current = true
+    let cancelled = false
+    let finished = hosts.length === 0
+    let remaining = hosts.length
+    setHealthLoading(hosts.length > 0)
+    setHealthById(Object.fromEntries(hosts.map((item) => [item.id, { loading: true, status: 'pending', data: null }])))
+
+    hosts.forEach(async (item) => {
+      let result
+      try {
+        const data = await fetchHealth(item)
+        result = { loading: false, status: data.status || 'healthy', data }
+      } catch {
+        result = { loading: false, status: 'offline', data: null }
+      }
+
+      if (!cancelled) {
+        setHealthById((current) => ({ ...current, [item.id]: result }))
+        remaining -= 1
+        if (remaining === 0) {
+          finished = true
+          setHealthLoading(false)
+        }
+      }
+    })
+
+    return () => {
+      cancelled = true
+      if (!finished) healthLoadedRef.current = false
+    }
+  }, [hosts, view, landingSection, healthRefreshKey])
 
   const load = useCallback(async ({initial=false}={}) => {
     if (!host) return
@@ -222,7 +323,7 @@ export default function App() {
   }
 
   if (view === 'landing' || !host) return <>
-    <LandingPage hosts={hosts} section={landingSection} onNavigate={navigateLanding} onAdd={()=>{setEditingHost(null);setShowHostModal(true)}} onOpen={openHost} onEdit={(item)=>{setEditingHost(item);setShowHostModal(true)}} onDelete={removeHost}/>
+    <LandingPage hosts={hosts} section={landingSection} onNavigate={navigateLanding} onAdd={()=>{setEditingHost(null);setShowHostModal(true)}} onOpen={openHost} onEdit={(item)=>{setEditingHost(item);setShowHostModal(true)}} onDelete={removeHost} healthById={healthById} healthLoading={healthLoading} onRefreshHealth={refreshHealth}/>
     <HostModal open={showHostModal} onClose={()=>{setShowHostModal(false);setEditingHost(null)}} onSave={saveHost} initialHost={editingHost}/>
   </>
 

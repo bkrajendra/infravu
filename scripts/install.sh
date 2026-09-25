@@ -87,19 +87,29 @@ WantedBy=multi-user.target
   if [ -w /etc/systemd/system ]; then
     printf '%s' "$service_contents" > "$service_file"
     systemctl daemon-reload
-    systemctl enable --now "$SERVICE_NAME"
+    systemctl enable "$SERVICE_NAME"
+    if systemctl is-active --quiet "$SERVICE_NAME"; then
+      systemctl restart "$SERVICE_NAME"
+    else
+      systemctl start "$SERVICE_NAME"
+    fi
   else
     command -v sudo >/dev/null 2>&1 || fail "systemd service installation requires sudo"
     printf '%s' "$service_contents" | sudo tee "$service_file" >/dev/null
     sudo systemctl daemon-reload
-    sudo systemctl enable --now "$SERVICE_NAME"
+    sudo systemctl enable "$SERVICE_NAME"
+    if sudo systemctl is-active --quiet "$SERVICE_NAME"; then
+      sudo systemctl restart "$SERVICE_NAME"
+    else
+      sudo systemctl start "$SERVICE_NAME"
+    fi
   fi
 
   log "installed ${binary_path}"
-  log "systemd service ${SERVICE_NAME} is enabled and running"
+  log "systemd service ${SERVICE_NAME} is enabled, restarted, and running"
 else
   log "installed ${binary_path}"
-  log "macOS does not register the agent as a service; run ${binary_path} directly"
+  log "macOS does not register the agent as a service; restart ${binary_path} if it was already running"
 fi
 
 log "agent endpoint: http://127.0.0.1:9100/api/resources"

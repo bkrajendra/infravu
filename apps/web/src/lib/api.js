@@ -6,11 +6,18 @@ export function normalizeHostInput(value) {
 }
 
 export function getResourceUrl(host) {
+  return `${getHostOrigin(host)}${host.resourcePath || '/api/resources'}`
+}
+
+export function getHealthUrl(host) {
+  return `${getHostOrigin(host)}/health`
+}
+
+function getHostOrigin(host) {
   const base = normalizeHostInput(host.host)
   const port = host.port ? `:${host.port}` : ''
   const parsed = new URL(base)
-  const origin = `${parsed.protocol}//${parsed.hostname}${parsed.port ? `:${parsed.port}` : port}`
-  return `${origin}${host.resourcePath || '/api/resources'}`
+  return `${parsed.protocol}//${parsed.hostname}${parsed.port ? `:${parsed.port}` : port}`
 }
 
 export async function fetchResources(host, timeoutMs = 5000) {
@@ -25,6 +32,22 @@ export async function fetchResources(host, timeoutMs = 5000) {
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`)
     }
+    return await response.json()
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
+export async function fetchHealth(host, timeoutMs = 5000) {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
+  try {
+    const response = await fetch(getHealthUrl(host), {
+      cache: 'no-store',
+      signal: controller.signal,
+      headers: { Accept: 'application/json' },
+    })
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
     return await response.json()
   } finally {
     clearTimeout(timer)
